@@ -1,0 +1,235 @@
+import java.awt.*;
+import java.util.Properties;
+import javax.swing.*;
+
+public class CalorieApp extends JFrame {
+    private Properties properties = new Properties();
+    private static final String USER_PROPERTIES_FILE = "user.properties";
+
+    public CalorieApp() {
+        setTitle("カロリー管理アプリ");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // タイトルラベル
+        JLabel titleLabel = new JLabel("カロリー管理アプリ", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Font", Font.BOLD, 24));
+        titleLabel.setPreferredSize(new Dimension(600, 50));
+
+        // 画像ラベル
+        ImageIcon logoIcon = new ImageIcon("C:\\Users\\student\\kannri\\Logo-3.png");
+        JLabel logoLabel = new JLabel(logoIcon);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // メインメニューパネル
+        JPanel mainMenuPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // ボタンの作成とサイズ設定
+        JButton registerButton = new JButton("新規登録");
+        JButton foodRegisterButton = new JButton("食品登録");
+        JButton mealRecordButton = new JButton("食事記録");
+        JButton goalSettingButton = new JButton("目標設定");
+
+        Dimension buttonSize = new Dimension(500, 100);
+        registerButton.setPreferredSize(buttonSize);
+        foodRegisterButton.setPreferredSize(buttonSize);
+        mealRecordButton.setPreferredSize(buttonSize);
+        goalSettingButton.setPreferredSize(buttonSize);
+
+        // ボタンにアクションを追加
+        registerButton.addActionListener(e -> showRegistrationScreen());
+        foodRegisterButton.addActionListener(e -> showFoodRegistrationScreen());
+        mealRecordButton.addActionListener(e -> showMealRecordScreen());
+        goalSettingButton.addActionListener(e -> showGoalSettingScreen());
+
+        // ボタンをレイアウトに追加
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainMenuPanel.add(registerButton, gbc);
+
+        gbc.gridy = 1;
+        mainMenuPanel.add(foodRegisterButton, gbc);
+
+        gbc.gridy = 2;
+        mainMenuPanel.add(mealRecordButton, gbc);
+
+        gbc.gridy = 3;
+        mainMenuPanel.add(goalSettingButton, gbc);
+
+        // フレームにコンポーネントを追加
+        add(logoLabel, BorderLayout.NORTH);
+        add(mainMenuPanel, BorderLayout.CENTER);
+
+        // フルスクリーン表示に設定
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setVisible(true);
+    }
+
+    private void showRegistrationScreen() {
+        JFrame registrationFrame = new JFrame("新規登録");
+        registrationFrame.setSize(600, 400);
+        registrationFrame.setLayout(new GridBagLayout());
+    
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+    
+        // ユーザー名ラベルとテキストフィールド
+        gbc.gridy = 0;
+        JLabel nameLabel = new JLabel("ユーザー名:");
+        nameLabel.setFont(new Font("MS ゴシック", Font.BOLD, 16)); // フォントをMS ゴシックに変更
+        registrationFrame.add(nameLabel, gbc);
+    
+        gbc.gridx = 1;
+        JTextField nameField = new JTextField();
+        nameField.setPreferredSize(new Dimension(300, 30));
+        registrationFrame.add(nameField, gbc);
+    
+        // メールアドレスラベルとテキストフィールド
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel emailLabel = new JLabel("メールアドレス:");
+        emailLabel.setFont(new Font("MS ゴシック", Font.BOLD, 16));
+        registrationFrame.add(emailLabel, gbc);
+    
+        gbc.gridx = 1;
+        JTextField emailField = new JTextField();
+        emailField.setPreferredSize(new Dimension(300, 30));
+        registrationFrame.add(emailField, gbc);
+    
+        // パスワードラベルとパスワードフィールド
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel passwordLabel = new JLabel("パスワード:");
+        passwordLabel.setFont(new Font("MS ゴシック", Font.BOLD, 16));
+        registrationFrame.add(passwordLabel, gbc);
+    
+        gbc.gridx = 1;
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setPreferredSize(new Dimension(300, 30));
+        registrationFrame.add(passwordField, gbc);
+    
+        // 登録ボタン
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JButton registerButton = new JButton("登録");
+        registerButton.setFont(new Font("MS ゴシック", Font.BOLD, 16));
+        registerButton.setPreferredSize(new Dimension(150, 40));
+        registerButton.addActionListener(e -> {
+            String username = nameField.getText();
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+    
+            if (validateRegistration(username, email, password)) {
+                saveUserDetails(username, email, password);
+                JOptionPane.showMessageDialog(registrationFrame, "登録が完了しました。");
+                registrationFrame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(registrationFrame, "入力データが不正です。");
+            }
+        });
+    
+        registrationFrame.add(registerButton, gbc);
+    
+        registrationFrame.setVisible(true);
+    }
+    
+    private void showFoodRegistrationScreen() {
+        JFrame foodFrame = new JFrame("食品登録");
+        foodFrame.setSize(600, 400);
+        foodFrame.setLayout(new GridBagLayout());
+    
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+    
+        // 食品名ラベルとテキストフィールド
+        gbc.gridy = 0;
+        JLabel foodNameLabel = new JLabel("食品名:");
+        foodNameLabel.setFont(new Font("MS ゴシック", Font.BOLD, 16)); // フォントをMS ゴシックに変更
+        foodFrame.add(foodNameLabel, gbc);
+    
+        gbc.gridx = 1;
+        JTextField foodNameField = new JTextField();
+        foodNameField.setPreferredSize(new Dimension(300, 30));
+        foodFrame.add(foodNameField, gbc);
+    
+        // カロリーラベルとテキストフィールド
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel calorieLabel = new JLabel("カロリー:");
+        calorieLabel.setFont(new Font("MS ゴシック", Font.BOLD, 16));
+        foodFrame.add(calorieLabel, gbc);
+    
+        gbc.gridx = 1;
+        JTextField calorieField = new JTextField();
+        calorieField.setPreferredSize(new Dimension(300, 30));
+        foodFrame.add(calorieField, gbc);
+    
+        // 栄養素ラベルとテキストフィールド
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel nutrientLabel = new JLabel("栄養素:");
+        nutrientLabel.setFont(new Font("MS ゴシック", Font.BOLD, 16));
+        foodFrame.add(nutrientLabel, gbc);
+    
+        gbc.gridx = 1;
+        JTextField nutrientField = new JTextField();
+        nutrientField.setPreferredSize(new Dimension(300, 30));
+        foodFrame.add(nutrientField, gbc);
+    
+        // 登録ボタン
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JButton registerFoodButton = new JButton("登録");
+        registerFoodButton.setFont(new Font("MS ゴシック", Font.BOLD, 16));
+        registerFoodButton.setPreferredSize(new Dimension(150, 40));
+        registerFoodButton.addActionListener(e -> {
+            String foodName = foodNameField.getText();
+            String calorie = calorieField.getText();
+            String nutrients = nutrientField.getText();
+    
+            if (!foodName.isEmpty() && !calorie.isEmpty() && !nutrients.isEmpty()) {
+                JOptionPane.showMessageDialog(foodFrame, "食品が登録されました。");
+                foodFrame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(foodFrame, "すべてのフィールドを入力してください。");
+            }
+        });
+    
+        foodFrame.add(registerFoodButton, gbc);
+    
+        foodFrame.setVisible(true);
+    }
+    
+
+     
+    private void showMealRecordScreen() {
+        JOptionPane.showMessageDialog(this, "食事記録機能は未実装です。");
+    }
+
+    private void showGoalSettingScreen() {
+        JOptionPane.showMessageDialog(this, "目標設定機能は未実装です。");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(CalorieApp::new);
+    }
+
+    private boolean validateRegistration(String username, String email, String password) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void saveUserDetails(String username, String email, String password) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
