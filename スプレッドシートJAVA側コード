@@ -1,0 +1,69 @@
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Collections;
+
+public class RegistrationApp {
+    private static final String  Shunnsuke-cloud= "Registration App";
+    private static final String heet01@fleet-automata-438402-q0.iam.gserviceaccount.com= "あなたのスプレッドシートIDをここに入力してください";
+    private static final String CREDENTIALS_FILE_PATH = "path/to/credentials.json"; // 認証情報のパス
+
+    // スプレッドシートにデータを保存するメソッド
+    private static void saveUserDetails(String username, String email, String password) {
+        try {
+            // Google Sheets API クライアントの初期化
+            GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(CREDENTIALS_FILE_PATH))
+                    .createScoped(Collections.singleton("https://www.googleapis.com/auth/spreadsheets"));
+            Sheets sheetsService = new Sheets.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(),
+                    new HttpCredentialsAdapter(credentials))
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+
+            // ユーザーデータをリストにまとめる
+            ValueRange body = new ValueRange()
+                    .setValues(Collections.singletonList(
+                            List.of(username, email, password)
+                    ));
+
+            // スプレッドシートにデータを追加
+            sheetsService.spreadsheets().values()
+                    .append(SPREADSHEET_ID, "Sheet1!A1", body)
+                    .setValueInputOption("RAW")
+                    .execute();
+
+            System.out.println("データがスプレッドシートに保存されました。");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Googleスプレッドシートへの保存に失敗しました。");
+        }
+    }
+
+    // バリデーションメソッド
+    private static boolean validateRegistration(String username, String email, String password) {
+        return !(username.isEmpty() || email.isEmpty() || password.isEmpty());
+    }
+
+    public static void main(String[] args) {
+        // showRegistrationScreen を呼び出すなどアプリ全体を統合する部分を記述
+        SwingUtilities.invokeLater(() -> new RegistrationApp().showRegistrationScreen());
+    }
+
+    private void showRegistrationScreen() {
+        JFrame registrationFrame = new JFrame("新規登録");
+        registrationFrame.setSize(600, 400);
+        registrationFrame.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // 残りは省略 (質問に提供されたコードをそのまま使用)
+    }
+}
