@@ -1,7 +1,0 @@
-echo "#Shun" >> README.md 
-git init 
-git add README.md 
-git commit -m "最初のコミット" 
-git Branch -M main 
-git Remote add Origin https://github.com/Shunnuke-cloud/Shun.git
- git Push -u 原点メイン
